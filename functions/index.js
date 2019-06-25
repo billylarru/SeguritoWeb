@@ -8,7 +8,6 @@ const firebaseApp = firebase.initializeApp(
   functions.config().firebase
 )
 
-
 async function getFacts(){
   const snapshots = await firebaseApp.firestore().collection('facts').get()
   const facts = snapshots.docs.map((snapshot) => snapshot.data())
@@ -31,8 +30,15 @@ app.get('/', (request, response) => {
   })
 })
 
-
-// Create and Deploy Your First Cloud Functions
-// https://firebase.google.com/docs/functions/write-firebase-functions
+app.get('/facts', (request, response) => {
+  response.set('Cache-Control', 'public, max-age=300, s-maxage=600')
+  getFacts().then((facts) => {
+    response.json(facts)
+    return undefined
+  })
+  .catch((error) => {
+    response.send('error')
+  })
+})
 
 exports.app = functions.https.onRequest(app);
