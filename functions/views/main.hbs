@@ -8,21 +8,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Login</h1>
-  <ul>
-    {{#each facts}}
-    <li>{{text}}</li>
-    {{/each}}
+  <h1>Main</h1>
+  <ul id="list">
   </ul>
-  <form>
-    <label>Email</label>
-    <input type="text" id="txtEmail">
-    <label>Password</label>
-    <input type="password" id="txtPassword">
-    <button type="button" id="btnLogin">Iniciar sesión</button>
-  </form>
   <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-auth.js"></script>
-  <script src="index.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-firestore.js"></script>
+
+  <script src="main.js"></script>
 </body>
 </html>
