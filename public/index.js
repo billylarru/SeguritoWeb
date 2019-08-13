@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
 const $btnLogin = document.getElementById('btnLogin')
 $btnLogin.addEventListener('click', login)
