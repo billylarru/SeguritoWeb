@@ -33,7 +33,25 @@ function login(e){
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
-    window.location.href = 'main'
+    // window.location.href = 'main'
+    console.log('por enviar peticion')
+    user.getIdToken(true)
+    .then((idToken) => {
+      console.log('token obtenido')
+      const params = {
+        idToken
+      }
+      axios.post('/sessionLogin', params)
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   } else {
     // No user is signed in.
   }

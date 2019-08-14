@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin')
 const express = require('express')
 const engines = require('consolidate')
+const cookieParser = require('cookie-parser')
 const app = express()
 
 const firebaseApp = admin.initializeApp(
@@ -14,9 +15,11 @@ async function getFacts(){
   return facts
 }
 
+app.use(cookieParser())
 app.engine('hbs', engines.handlebars)
 app.set('views', './views')
 app.set('view engine', 'hbs')
+
 
 app.get('/', (request, response) => {
   response.render('index', {})
@@ -57,7 +60,8 @@ app.post('/sessionLogin', async (request, response) => {
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
     const sessionCookie = await admin.auth().createSessionCookie(idToken, {expiresIn})
     // Set cookie policy for session cookie.
-    const options = {maxAge: expiresIn, httpOnly: true, secure: true};
+    // const options = {maxAge: expiresIn, httpOnly: true, secure: true};
+    const options = {maxAge: expiresIn, httpOnly: true, secure: false};
     response.cookie('session', sessionCookie, options);
     response.end(JSON.stringify({status: 'success'}));
   } catch (error) {
@@ -68,5 +72,19 @@ app.post('/sessionLogin', async (request, response) => {
 
 })
 
+app.get('/protegido', async (request, response) => {
+  console.log('ruta protegida')
+  try {
+    console.log('primera linea del try')
+    console.log(JSON.stringify(request.headers))
+    const sessionCookie = request.cookies.session || '';
+    console.log(sessionCookie)
+    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true /** checkRevoked */)
+    response.status(200).send({status: 'tienes acceso'})
+  } catch (error) {
+    // response.redirect('test')
+    response.send(error.message)
+  }
+})
 
 exports.app = functions.https.onRequest(app);
